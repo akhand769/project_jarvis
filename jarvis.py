@@ -4,6 +4,7 @@ import speech_recognition as sr
 import wikipedia
 import webbrowser as wb
 import os
+import smtplib
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 print(voices)
@@ -22,8 +23,6 @@ def wishme():
     speak("I am Max")
     speak("Please Tell me How may I help You Sir")
 def takeCommand():
-    '''
-    '''
     r= sr.Recognizer()
     with sr.Microphone() as source:
         r.pause_threshold = 0.1
@@ -38,6 +37,12 @@ def takeCommand():
         speak('Say that again please....')
         return "None"
     return query
+def sendEmail(to,body):
+    password='sqmdthdagtsiutwx'
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.login('akhandchaurasia2002@gmail.com',password)
+    server.sendmail('akhandchaurasia2002@gmail.com',to,body)
+    server.close()
 if __name__=="__main__":
     wishme()
     while True:
@@ -45,6 +50,7 @@ if __name__=="__main__":
         query2='Hello'
         with sr.Microphone() as source:
             r.pause_threshold = 0.1
+            print('listening')
             audio = r.listen(source)
         try:
             query2 = r.recognize_google(audio,language='en-in')
@@ -71,6 +77,24 @@ if __name__=="__main__":
             elif 'current time' in query:
                 strTime = datetime.datetime.now().strftime("%H:%M:%S")
                 speak(strTime)
+            elif 'open vs code' in query:
+                codepath="C:\\Users\\akhan\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+                os.startfile(codepath)
+            elif 'email' in query:
+                try:
+                    speak("Give me the mail id")
+                    mailid = 'akhand769@gmail.com'
+                    print(mailid)
+                    speak("What is the body")
+                    content = takeCommand()
+                    print(content)
+                    sendEmail(mailid,content)
+                    speak("Email sent successfully !!")
+                except Exception as e:
+                    print(e)
+                    speak("Sorry Akhand Email cannot be sent due to some error ")
+                    
+
         
 
 
